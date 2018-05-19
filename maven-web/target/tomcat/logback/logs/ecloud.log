@@ -1,0 +1,6 @@
+2018-03-23 12:51:25.884 [ http-bio-8080-exec-8 ] - [ INFO  ] [
+				ecloud.com.base.filter.PageEhCacheFilter : 57 ] - ###############flag:true
+2018-03-23 12:51:25.889 [ http-bio-8080-exec-8 ] - [ INFO  ] [
+				ecloud.com.base.filter.PageEhCacheFilter : 64 ] - 当前请求被缓存：/maven/login/index.htmnull
+2018-03-23 12:51:26.112 [ http-bio-8080-exec-8 ] - [ INFO  ] [
+				ecloud.com.base.Interceptor.PrintParamsInterceptor : 20 ] - request:uri->params:/maven/login/index.htm->{}

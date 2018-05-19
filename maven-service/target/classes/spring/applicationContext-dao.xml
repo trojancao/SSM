@@ -1,0 +1,74 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+
+
+                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+<!-- 	同 spring-mybatis.xml -->
+<!-- 	现在看来mybatis的3.4.0及以上版本只支持mybatis-spring1.3.0及以上版本（现在最新是1.3.0），居然出现了不兼容情况，
+官方好像并不打算去兼容，我们开发人员需要自己去注意了。 -->
+	<!-- 扫描dao层 -->
+	<context:component-scan base-package="ecloud.com.dao" />
+	<context:component-scan base-package="ecloud.com.base.shiro.dao" />
+
+	<!-- 加载db.properties文件中的内容，db.properties文件中key命名要有一定的特殊规则 -->
+	<context:property-placeholder location="classpath:dbconfig.properties,classpath:redis.properties" />
+
+	<!-- 配置数据源,dbcp -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<!-- <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" 
+			destroy-method="close"> -->
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<!-- 初始化连接大小 -->
+		<property name="initialSize" value="2"></property>
+		<!-- 连接池最大数量 -->
+		<property name="maxActive" value="20"></property>
+		<!-- 连接池最大空闲 ，对象池中对象最大个数 -->
+		<property name="maxIdle" value="60000"></property>
+		<!-- 连接池最小空闲，对象池中对象最小个数 -->
+		<property name="minIdle" value="2"></property>
+		<!-- 获取连接最大等待时间，单位为 ms, 超过时间会丟出错误信息 -->
+		<property name="maxWait" value="60000"></property>
+		<!-- 每多少毫秒检测空闲连接超过10分钟的连接; 失效检查线程运行时间间隔，如果小于等于0，不会启动检查线程，默认-1 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 连接池中连接，在时间段内一直空闲， 被逐出连接池的时间 （默认为30分钟，可以适当做调整，需要和后端服务端的策略配置相关） ; -->
+		<!-- 大于0 ，进行连接空闲时间判断，或为0，对空闲的连接不进行验证；默认30分钟 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+		<!-- 超过时间限制，回收没有用(废弃)的连接（默认为 300秒，调整为180）; -->
+		<property name="removeAbandonedTimeout" value="1800" />
+	</bean>
+
+	<!--采用抽象类org.mybatis.spring.support.SqlSessionDaoSupport提供SqlSession。 spring-mybatis.xml -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 数据库连接池 -->
+		<property name="dataSource" ref="dataSource" />
+		<!-- 加载mybatis的全局配置文件 -->
+		<property name="configLocation" value="classpath:mybatis/sqlMapConfig.xml" />
+		<!-- 自动扫描mapping.xml文件，**表示迭代查找,也可在sqlMapConfig.xml中单独指定xml文件 -->
+		<!-- <property name="mapperLocations" value="classpath:com/hua/saf/**/*.xml" /> -->
+		<property name="mapperLocations" value="classpath:mapper/**/*.xml" />
+	</bean>
+
+<!-- mybatis spring sqlSessionTemplate,使用时直接让spring注入即可 -->
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+
+	<!-- DAO接口所在包名，Spring会自动查找其下的类  使用LogMapper.java 必须 ，也可用@MapperScan注解-->
+<!-- 	 MapperScannerConfigurer 将会创建 MapperFactoryBean,之后自动装配 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 扫描包路径，如果需要扫描多个包，中间使用半角逗号隔开 -->
+		<property name="basePackage" value="ecloud.com.mapper.base"></property>
+<!-- 		<property name="markerInterface" value="ecloud.com.mapper.base.SqlMapper" /> -->
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSource"/>
+	</bean>
+</beans>
