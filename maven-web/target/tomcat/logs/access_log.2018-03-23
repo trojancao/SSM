@@ -1,5 +1,0 @@
-0:0:0:0:0:0:0:1 - - [23/Mar/2018:12:27:44 +0800] "GET /web/ HTTP/1.1" 404 - http-bio-8080-exec-1 0
-0:0:0:0:0:0:0:1 - - [23/Mar/2018:12:27:57 +0800] "GET /maven/ HTTP/1.1" 200 52 http-bio-8080-exec-7 728
-0:0:0:0:0:0:0:1 - - [23/Mar/2018:12:28:02 +0800] "GET /maven/index.jsp HTTP/1.1" 200 52 http-bio-8080-exec-7 1
-0:0:0:0:0:0:0:1 - - [23/Mar/2018:12:51:21 +0800] "GET /maven/index.jsp HTTP/1.1" 302 - http-bio-8080-exec-5 138
-0:0:0:0:0:0:0:1 - - [23/Mar/2018:12:51:26 +0800] "GET /maven/login/index.htm HTTP/1.1" 404 993 http-bio-8080-exec-8 4356
